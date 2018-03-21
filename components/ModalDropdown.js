@@ -31,6 +31,8 @@ const TOUCHABLE_ELEMENTS = [
     'TouchableNativeFeedback'
 ];
 
+const LIMIT_ITEM_DROPDOWN_SHOW = 4;
+
 export default class ModalDropdown extends Component {
     static propTypes = {
         disabled: PropTypes.bool,
@@ -237,7 +239,7 @@ _calcPosition() {
     let dropdownHeight = (dropdownStyle && StyleSheet.flatten(dropdownStyle).height) ||
         StyleSheet.flatten(styles.dropdown).height;
 
-    if (itemHeight !== null && this.props.options.length <= 4) {
+    if (itemHeight !== null && this.props.options.length <= LIMIT_ITEM_DROPDOWN_SHOW) {
         dropdownHeight = options.length * itemHeight;
     }
 
