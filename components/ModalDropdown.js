@@ -18,10 +18,9 @@ import {
     TouchableOpacity,
     TouchableHighlight,
     Modal,
+    FlatList,
     ActivityIndicator,
 } from 'react-native';
-
-import ListView from "deprecated-react-native-listview";
 
 import PropTypes from 'prop-types';
 
@@ -293,10 +292,10 @@ _renderLoading() {
 _renderDropdown() {
     const {scrollEnabled, renderSeparator, showsVerticalScrollIndicator, keyboardShouldPersistTaps} = this.props;
     return (
-        <ListView scrollEnabled={scrollEnabled}
+        <FlatList scrollEnabled={scrollEnabled}
     style={styles.list}
-    dataSource={this._dataSource}
-    renderRow={this._renderRow}
+    data={this.props.options}
+    renderItem={this._renderRow}
     renderSeparator={renderSeparator || this._renderSeparator}
     automaticallyAdjustContentInsets={false}
     showsVerticalScrollIndicator={showsVerticalScrollIndicator}
@@ -313,7 +312,7 @@ get _dataSource() {
     return ds.cloneWithRows(options);
 }
 
-_renderRow = (rowData, sectionID, rowID, highlightRow) => {
+_renderRow = ({item, index}, sectionID, rowID) => {
     const {renderRow, dropdownTextStyle, dropdownTextHighlightStyle, accessible} = this.props;
     const {selectedIndex} = this.state;
     const key = `row_${rowID}`;
@@ -326,13 +325,13 @@ _renderRow = (rowData, sectionID, rowID, highlightRow) => {
         highlighted && dropdownTextHighlightStyle
 ]}
 >
-    {rowData}
+    {item}
 </Text>) :
-    renderRow(rowData, rowID, highlighted);
+    renderRow(item, rowID, highlighted);
     const preservedProps = {
             key,
             accessible,
-            onPress: () => this._onRowPress(rowData, sectionID, rowID, highlightRow),
+            onPress: () => this._onRowPress(item, sectionID, rowID),
         };
     if (TOUCHABLE_ELEMENTS.find(name => name == row.type.displayName)) {
         const props = {...row.props};
@@ -379,10 +378,9 @@ _renderRow = (rowData, sectionID, rowID, highlightRow) => {
 );
 };
 
-_onRowPress(rowData, sectionID, rowID, highlightRow) {
+_onRowPress(rowData, sectionID, rowID) {
     const {onSelect, renderButtonText, onDropdownWillHide} = this.props;
     if (!onSelect || onSelect(rowID, rowData) !== false) {
-        highlightRow(sectionID, rowID);
         const value = renderButtonText && renderButtonText(rowData) || rowData.toString();
         this._nextValue = value;
         this._nextIndex = rowID;
