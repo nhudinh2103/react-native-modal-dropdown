@@ -312,11 +312,11 @@ get _dataSource() {
     return ds.cloneWithRows(options);
 }
 
-_renderRow = ({item, index}, sectionID, rowID) => {
+_renderRow = ({item, index}, sectionID) => {
     const {renderRow, dropdownTextStyle, dropdownTextHighlightStyle, accessible} = this.props;
     const {selectedIndex} = this.state;
-    const key = `row_${rowID}`;
-    const highlighted = rowID == selectedIndex;
+    const key = `row_${index}`;
+    const highlighted = index == selectedIndex;
     const row = !renderRow ?
         (<Text style={[
                     styles.rowText,
@@ -327,11 +327,11 @@ _renderRow = ({item, index}, sectionID, rowID) => {
 >
     {item}
 </Text>) :
-    renderRow(item, rowID, highlighted);
+    renderRow(item, index, highlighted);
     const preservedProps = {
             key,
             accessible,
-            onPress: () => this._onRowPress(item, sectionID, rowID),
+            onPress: () => this._onRowPress(item, sectionID, index),
         };
     if (TOUCHABLE_ELEMENTS.find(name => name == row.type.displayName)) {
         const props = {...row.props};
